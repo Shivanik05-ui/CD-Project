@@ -16,7 +16,11 @@ from first_follow import compute_first, compute_follow
 from parsing_table import generate_parsing_table
 
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    template_folder="templates",
+    static_folder="static"
+)
 
 # load grammar
 GRAMMAR_FILE = os.path.join(BASE_DIR, "..", "grammar", "sample_grammar.txt")
