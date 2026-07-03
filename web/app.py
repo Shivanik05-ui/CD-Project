@@ -7,7 +7,9 @@ from graphviz import Digraph
 
 
 # allow importing src modules
-sys.path.append("../src")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+SRC_DIR = os.path.join(BASE_DIR, "..", "src")
+sys.path.append(SRC_DIR)
 
 from grammar_input import load_grammar_from_file
 from first_follow import compute_first, compute_follow
@@ -17,7 +19,8 @@ from parsing_table import generate_parsing_table
 app = Flask(__name__)
 
 # load grammar
-grammar = load_grammar_from_file("../grammar/sample_grammar.txt")
+GRAMMAR_FILE = os.path.join(BASE_DIR, "..", "grammar", "sample_grammar.txt")
+grammar = load_grammar_from_file(GRAMMAR_FILE)
 
 
 # ---------------- HOME PAGE ---------------- #
