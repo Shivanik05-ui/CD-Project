@@ -27,7 +27,7 @@ grammar = load_grammar_from_file(GRAMMAR_FILE)
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return "HELLO FROM FLASK"
 
 
 # ---------------- PARSING STEPS ---------------- #
