@@ -3,18 +3,19 @@ import sys
 from flask import Flask, render_template, request, jsonify
 from graphviz import Digraph
 
-# Force Graphviz path (fix for Windows)
+# ---------------- PATHS ---------------- #
 
-
-# allow importing src modules
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SRC_DIR = os.path.join(BASE_DIR, "..", "src")
+GRAMMAR_FILE = os.path.join(BASE_DIR, "..", "grammar", "sample_grammar.txt")
+
 sys.path.append(SRC_DIR)
 
 from grammar_input import load_grammar_from_file
 from first_follow import compute_first, compute_follow
 from parsing_table import generate_parsing_table
 
+# ---------------- FLASK ---------------- #
 
 app = Flask(
     __name__,
@@ -22,12 +23,9 @@ app = Flask(
     static_folder="static"
 )
 
-# load grammar
-GRAMMAR_FILE = os.path.join(BASE_DIR, "..", "grammar", "sample_grammar.txt")
 grammar = load_grammar_from_file(GRAMMAR_FILE)
 
-
-# ---------------- HOME PAGE ---------------- #
+# ---------------- HOME ---------------- #
 
 @app.route("/")
 def home():
@@ -42,7 +40,6 @@ def generate_parsing_steps(expr):
     tokens.append("$")
 
     stack = ["$", "E"]
-
     pointer = 0
     steps = []
 
@@ -50,7 +47,7 @@ def generate_parsing_steps(expr):
     follow = compute_follow(grammar, first, "E")
     table = generate_parsing_table(grammar, first, follow)
 
-    while len(stack) > 0:
+    while stack:
 
         stack_str = " ".join(stack)
         input_str = " ".join(tokens[pointer:])
@@ -59,11 +56,13 @@ def generate_parsing_steps(expr):
         current = tokens[pointer]
 
         if top == current:
+
             steps.append({
                 "stack": stack_str,
                 "input": input_str,
                 "action": f"Match {current}"
             })
+
             pointer += 1
 
         elif top in table and current in table[top]:
@@ -81,11 +80,13 @@ def generate_parsing_steps(expr):
                     stack.append(symbol)
 
         else:
+
             steps.append({
                 "stack": stack_str,
                 "input": input_str,
                 "action": "ERROR"
             })
+
             break
 
     return steps
@@ -108,12 +109,11 @@ def create_parse_tree(expr):
         node = f"node{i}"
 
         dot.node(node, tok)
-
         dot.edge(parent, node)
 
-    path = "static/parse_tree"
+    output_path = os.path.join(BASE_DIR, "static", "parse_tree")
 
-    dot.render(path, format="png", cleanup=True)
+    dot.render(output_path, format="png", cleanup=True)
 
     return "/static/parse_tree.png"
 
@@ -128,22 +128,23 @@ def parse():
         data = request.get_json()
         expr = data["expr"]
 
-        # compute FIRST FOLLOW
         first = compute_first(grammar)
         follow = compute_follow(grammar, first, list(grammar.keys())[0])
 
-        # parsing table
         table = generate_parsing_table(grammar, first, follow)
 
-        # convert sets to list for JSON
         first = {k: list(v) for k, v in first.items()}
         follow = {k: list(v) for k, v in follow.items()}
 
-        # parsing steps
         steps = generate_parsing_steps(expr)
 
-        # parse tree
-        tree = create_parse_tree(expr)
+        # Graphviz isn't available on Render Free.
+        # Don't crash the whole project.
+        try:
+            tree = create_parse_tree(expr)
+        except Exception as e:
+            print("Parse tree generation skipped:", e)
+            tree = None
 
         return jsonify({
             "grammar": grammar,
@@ -163,10 +164,10 @@ def parse():
         })
 
 
-# ---------------- RUN SERVER ---------------- #
-
+# ---------------- RUN ---------------- #
 
 if __name__ == "__main__":
+
     app.run(
         host="0.0.0.0",
         port=int(os.environ.get("PORT", 5000))
