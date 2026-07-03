@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, jsonify
 from graphviz import Digraph
 
 # Force Graphviz path (fix for Windows)
-os.environ["PATH"] += os.pathsep + r"C:\Program Files\Graphviz\bin"
+
 
 # allow importing src modules
 sys.path.append("../src")
@@ -158,5 +158,10 @@ def parse():
 
 # ---------------- RUN SERVER ---------------- #
 
+import os
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 5000))
+    )
