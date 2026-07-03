@@ -158,7 +158,6 @@ def parse():
 
 # ---------------- RUN SERVER ---------------- #
 
-import os
 
 if __name__ == "__main__":
     app.run(
