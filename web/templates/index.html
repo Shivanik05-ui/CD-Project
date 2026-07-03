@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>LL(1) Parser Generator</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>LL(1) Parser Generator</h1>
+
+        <!-- INPUT AREA -->
+
+        <div class="input-box">
+
+            <input id="expr" type="text" placeholder="Enter expression (example: id + id * id)" value="id + id * id" />
+
+            <button type="button" onclick="runParser()">
+                Run Parser
+            </button>
+
+        </div>
+
+        <!-- RESULT GRID -->
+
+        <div class="grid">
+
+            <!-- GRAMMAR -->
+
+            <div class="card">
+
+                <h2>Grammar Rules</h2>
+
+                <pre id="grammar">
+Waiting for input...
+</pre>
+
+            </div>
+
+            <!-- FIRST -->
+
+            <div class="card">
+
+                <h2>FIRST Sets</h2>
+
+                <pre id="first">
+Waiting for input...
+</pre>
+
+            </div>
+
+            <!-- FOLLOW -->
+
+            <div class="card">
+
+                <h2>FOLLOW Sets</h2>
+
+                <pre id="follow">
+Waiting for input...
+</pre>
+
+            </div>
+
+            <!-- PARSING TABLE -->
+
+            <div class="card">
+
+                <h2>Parsing Table</h2>
+
+                <pre id="table">
+Waiting for input...
+</pre>
+
+            </div>
+            <div class="card">
+                <h2>Parsing Steps</h2>
+                <pre id="steps"></pre>
+            </div>
+            <!-- PARSE TREE -->
+
+            <div class="card">
+
+                <h2>Parse Tree</h2>
+
+                <div class="tree-container">
+
+                    <img id="tree" alt="Parse Tree will appear here" />
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>
