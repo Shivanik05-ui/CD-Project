@@ -2,7 +2,6 @@ import os
 import sys
 from flask import Flask, render_template, request, jsonify
 from graphviz import Digraph
-from left_recursion import remove_immediate_left_recursion
 
 # ---------------- PATHS ---------------- #
 
@@ -15,9 +14,7 @@ sys.path.append(SRC_DIR)
 from grammar_input import load_grammar_from_file
 from first_follow import compute_first, compute_follow
 from parsing_table import generate_parsing_table
-
-# ---------------- FLASK ---------------- #
-
+from left_recursion import remove_immediate_left_recursion
 app = Flask(
     __name__,
     template_folder="templates",
