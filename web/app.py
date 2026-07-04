@@ -2,6 +2,7 @@ import os
 import sys
 from flask import Flask, render_template, request, jsonify
 from graphviz import Digraph
+from left_recursion import remove_immediate_left_recursion
 
 # ---------------- PATHS ---------------- #
 
@@ -23,7 +24,10 @@ app = Flask(
     static_folder="static"
 )
 
+
 grammar = load_grammar_from_file(GRAMMAR_FILE)
+
+grammar = remove_immediate_left_recursion(grammar)
 
 # ---------------- HOME ---------------- #
 
